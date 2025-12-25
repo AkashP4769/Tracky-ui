@@ -7,6 +7,9 @@ import { SidebarInset } from '@renderer/components/ui/sidebar'
 // import { AppSidebar } from '@renderer/components/app-asidebar'
 
 import Appbar from '@renderer/components/myui/appbar'
+import  Authprovider from '@renderer/components/authprovider'
+
+
 
 
 export const Route = createRootRoute({
@@ -24,13 +27,16 @@ export const Route = createRootRoute({
           <Outlet />
         </div>
       </SidebarInset> */}
-      <div className='flex w-screen h-screen overflow-hidden'>
-        {/* Appbar */}
-        <Appbar/>
-        <SidebarInset>
-          <Outlet />
-        </SidebarInset>
-      </div>
+      
+      <Authprovider>
+        <div className='flex w-screen h-screen overflow-hidden'>
+          {/* Appbar */}
+          <Appbar/>
+          <SidebarInset>
+            <Outlet />
+          </SidebarInset>
+        </div>
+      </Authprovider>
     </Providers>
   )
 })
