@@ -3,10 +3,11 @@ import { createRootRoute, Outlet } from '@tanstack/react-router'
 import { Providers } from '@renderer/components/providers'
 
 // import { SidebarTrigger } from '@renderer/components/ui/sidebar'
-// import { SidebarInset } from '@renderer/components/ui/sidebar'
+import { SidebarInset } from '@renderer/components/ui/sidebar'
 // import { AppSidebar } from '@renderer/components/app-asidebar'
 
 import Appbar from '@renderer/components/myui/appbar'
+
 
 export const Route = createRootRoute({
   component: () => (
@@ -23,12 +24,12 @@ export const Route = createRootRoute({
           <Outlet />
         </div>
       </SidebarInset> */}
-      <div className='flex'>
+      <div className='flex w-screen h-screen overflow-hidden'>
         {/* Appbar */}
         <Appbar/>
-
-        {/* Outlet */}
-        <Outlet />
+        <SidebarInset>
+          <Outlet />
+        </SidebarInset>
       </div>
     </Providers>
   )

@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardLayoutRouteImport } from './routes/dashboard/layout'
+import { Route as AppsLayoutRouteImport } from './routes/apps/layout'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StatsIndexRouteImport } from './routes/stats/index'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
@@ -19,6 +20,11 @@ import { Route as AppsIndexRouteImport } from './routes/apps/index'
 const DashboardLayoutRoute = DashboardLayoutRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppsLayoutRoute = AppsLayoutRouteImport.update({
+  id: '/apps',
+  path: '/apps',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -42,15 +48,16 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   getParentRoute: () => DashboardLayoutRoute,
 } as any)
 const AppsIndexRoute = AppsIndexRouteImport.update({
-  id: '/apps/',
-  path: '/apps/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppsLayoutRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/apps': typeof AppsLayoutRouteWithChildren
   '/dashboard': typeof DashboardLayoutRouteWithChildren
-  '/apps': typeof AppsIndexRoute
+  '/apps/': typeof AppsIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/settings': typeof SettingsIndexRoute
   '/stats': typeof StatsIndexRoute
@@ -65,6 +72,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/apps': typeof AppsLayoutRouteWithChildren
   '/dashboard': typeof DashboardLayoutRouteWithChildren
   '/apps/': typeof AppsIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -75,8 +83,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/dashboard'
     | '/apps'
+    | '/dashboard'
+    | '/apps/'
     | '/dashboard/'
     | '/settings'
     | '/stats'
@@ -85,6 +94,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/apps'
     | '/dashboard'
     | '/apps/'
     | '/dashboard/'
@@ -94,8 +104,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppsLayoutRoute: typeof AppsLayoutRouteWithChildren
   DashboardLayoutRoute: typeof DashboardLayoutRouteWithChildren
-  AppsIndexRoute: typeof AppsIndexRoute
   SettingsIndexRoute: typeof SettingsIndexRoute
   StatsIndexRoute: typeof StatsIndexRoute
 }
@@ -107,6 +117,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/apps': {
+      id: '/apps'
+      path: '/apps'
+      fullPath: '/apps'
+      preLoaderRoute: typeof AppsLayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -139,13 +156,25 @@ declare module '@tanstack/react-router' {
     }
     '/apps/': {
       id: '/apps/'
-      path: '/apps'
-      fullPath: '/apps'
+      path: '/'
+      fullPath: '/apps/'
       preLoaderRoute: typeof AppsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AppsLayoutRoute
     }
   }
 }
+
+interface AppsLayoutRouteChildren {
+  AppsIndexRoute: typeof AppsIndexRoute
+}
+
+const AppsLayoutRouteChildren: AppsLayoutRouteChildren = {
+  AppsIndexRoute: AppsIndexRoute,
+}
+
+const AppsLayoutRouteWithChildren = AppsLayoutRoute._addFileChildren(
+  AppsLayoutRouteChildren,
+)
 
 interface DashboardLayoutRouteChildren {
   DashboardIndexRoute: typeof DashboardIndexRoute
@@ -161,8 +190,8 @@ const DashboardLayoutRouteWithChildren = DashboardLayoutRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppsLayoutRoute: AppsLayoutRouteWithChildren,
   DashboardLayoutRoute: DashboardLayoutRouteWithChildren,
-  AppsIndexRoute: AppsIndexRoute,
   SettingsIndexRoute: SettingsIndexRoute,
   StatsIndexRoute: StatsIndexRoute,
 }
