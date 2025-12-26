@@ -15,7 +15,8 @@ class AppService extends BackendService {
 
     async updateApp(app: App) {
         // Placeholder for updating app logic
-        const response = await axios.put<App>(`${this.backendUrl}/apps/${app.id}`, app);
+
+        const response = await axios.put<App>(`${this.backendUrl}/apps/`, app);
         return response.data;
     }
 

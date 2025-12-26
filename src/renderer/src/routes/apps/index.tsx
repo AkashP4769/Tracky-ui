@@ -10,6 +10,7 @@ import AppTable from '@renderer/components/myui/apps/app-table'
 import AppEditor from '@renderer/components/myui/apps/app-editor'
 import Btn from '@renderer/components/myui/btn'
 import AppService from '@renderer/services/app-service'
+import { is } from 'date-fns/locale'
 
 
 export const Route = createFileRoute('/apps/')({
@@ -19,24 +20,24 @@ export const Route = createFileRoute('/apps/')({
 
 function RouteComponent() {
   const user = useActiveUserStore((s) => s)
+  const appService = new AppService()
+
   const [apps, setApps] = useState<App[]>([])
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const [editingApp, setEditingApp] = useState<App | null>(null)
 
   useEffect(() => {
-    // Fetch apps from backend API
-    async function fetchApps() {
+    fetchApps()
+  }, [])
+
+  const fetchApps = async () => {
       try {
-        const appService = new AppService()
         const fetchedApps = await appService.fetchApps(user.id) 
         setApps(fetchedApps)
       } catch (error) {
         console.error('Error fetching apps:', error)
       }
     }
-
-    fetchApps()
-  }, [])
 
   const handleAppEdit = (app: App) => {
     setIsEditing(true)
@@ -48,8 +49,19 @@ function RouteComponent() {
     setEditingApp(null)
   }
 
-  const handleEditSave = (updatedApp: App) => {
+  const handleEditSave = async (updatedApp: App) => {
+    if (!editingApp) return
+    
+    // Update app in backend
+    const updated = await appService.updateApp(updatedApp)
+    if (!updated) {
+      console.error('Failed to update app')
+      return
+    }
 
+    await fetchApps()
+    setIsEditing(false)
+    setEditingApp(null)
   }
 
   console.log('Apps:', apps)

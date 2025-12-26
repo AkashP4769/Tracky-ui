@@ -18,7 +18,7 @@ export default function AppsTable({ apps, handleAppEdit }: AppsTableProps) {
       <table className="w-full border-collapse">
         <thead className="bg-neutral-800 text-neutral-200">
           <tr>
-            <th className="px-4 w-6 h-6 py-3 text-left text-xl"></th>
+            <th className="px-4 py-3 text-left text-xl"></th>
             <th className="px-4 py-3 text-left text-xl">Name</th>
             <th className="px-4 py-3 text-left text-xl">Process</th>
             <th className="px-4 py-3 text-left text-xl">Last used</th>

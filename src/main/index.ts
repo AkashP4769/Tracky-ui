@@ -1,7 +1,8 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog, nativeImage } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import fs from 'fs'
 
 function createWindow(): void {
   // Create the browser window.
@@ -72,3 +73,27 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+ipcMain.handle('select-exe', async () => {
+  const result = await dialog.showOpenDialog({
+    properties: ['openFile'],
+    filters: [{ name: 'Executables', extensions: ['exe'] }],
+  })
+
+  if (result.canceled || result.filePaths.length === 0) {
+    return null
+  }
+
+  const filePath = result.filePaths[0]
+
+  // Extract icon from exe
+  const icon = await app.getFileIcon(filePath, { size: 'large' })
+  const iconBase64 = icon.toPNG().toString('base64')
+
+  console.log('Selected icon:', iconBase64)
+
+  return {
+    name: filePath.split('\\').pop(),
+    path: filePath,
+    icon: iconBase64,
+  }
+})
