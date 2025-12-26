@@ -2,11 +2,17 @@ import type { App } from '@renderer/models/apps'
 import { Edit } from 'lucide-react'
 
 
+// interface AppsTableProps {
+//   apps: App[]
+// }
+
 interface AppsTableProps {
   apps: App[]
+  handleAppEdit: (app: App) => void
 }
 
-export default function AppsTable({ apps }: AppsTableProps) {
+
+export default function AppsTable({ apps, handleAppEdit }: AppsTableProps) {
   return (
     <div className="w-full overflow-hidden rounded-xl border border-neutral-600">
       <table className="w-full border-collapse">
@@ -18,7 +24,6 @@ export default function AppsTable({ apps }: AppsTableProps) {
             <th className="px-4 py-3 text-left text-xl">Last used</th>
             <th className="px-4 py-3 text-left text-xl">Date added</th>
             <th className="px-4 py-3 w-6 text-center text-xl">Tracking</th>
-            <th className="px-4 py-3 text-center text-xl"></th>
           </tr>
         </thead>
 
@@ -27,6 +32,7 @@ export default function AppsTable({ apps }: AppsTableProps) {
             <tr
               key={app.id}
               className="hover:bg-neutral-900 transition-colors "
+              onClick={() => handleAppEdit(app)}
             >
               {/* Icon */}
               <td className="px-4 py-5">
@@ -78,11 +84,11 @@ export default function AppsTable({ apps }: AppsTableProps) {
                 </span>
               </td>
 
-              <td className="px-4 py-2 text-center">
+              {/* <td className="px-4 py-2 text-center">
                 <button className="text-neutral-400 hover:text-neutral-200 transition-colors">
                   <Edit size={16} />
                 </button>
-              </td>
+              </td> */}
             </tr>
           ))}
         </tbody>
