@@ -3,12 +3,13 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 // import app from models
 import axios from 'axios'
-import type { App } from '@renderer/models/apps'
+import type { App } from '@renderer/models/app'
 import { useActiveUserStore } from '@renderer/stores/user'
 
 import AppTable from '@renderer/components/myui/apps/app-table'
 import AppEditor from '@renderer/components/myui/apps/app-editor'
 import Btn from '@renderer/components/myui/btn'
+import AppService from '@renderer/services/app-service'
 
 
 export const Route = createFileRoute('/apps/')({
@@ -26,9 +27,9 @@ function RouteComponent() {
     // Fetch apps from backend API
     async function fetchApps() {
       try {
-        const response = await axios.get<App[]>(`${import.meta.env.VITE_URL}/apps?user_id=${user.id}`)
-        console.log('Fetched apps:', response.data)
-        setApps(response.data)
+        const appService = new AppService()
+        const fetchedApps = await appService.fetchApps(user.id) 
+        setApps(fetchedApps)
       } catch (error) {
         console.error('Error fetching apps:', error)
       }

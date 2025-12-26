@@ -1,4 +1,4 @@
-import type { App } from '@renderer/models/apps'
+import type { App } from '@renderer/models/app'
 import { Edit } from 'lucide-react'
 
 

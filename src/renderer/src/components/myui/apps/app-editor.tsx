@@ -1,4 +1,4 @@
-import { App } from '@renderer/models/apps'
+import { App } from '@renderer/models/app'
 import React from 'react'
 import Btn from '../btn'
 
@@ -9,6 +9,9 @@ interface AppEditorProps {
 }
 
 const AppEditor = ({ editingApp, handleEditCancel, handleSave }: AppEditorProps) => {
+
+
+
   return (
     <div className="fixed inset-0 z-20 bg-transparent bg-opacity-50 flex items-center justify-center ">
       <div className="bg-neutral-800 p-6 rounded-lg w-192">
