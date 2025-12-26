@@ -66,12 +66,12 @@ const AppEditor = ({ editingApp, handleEditCancel, handleSave }: AppEditorProps)
             </tr>
 
             {/* icon */}
-            <tr className="">
+            {draft.icon && <tr className="">
               <td className="py-2 text-neutral-200">Icon:</td>
               <td className="py-2 text-neutral-200 border-b border-neutral-600">
                 <img src={`data:image/png;base64,${draft.icon}`} />
               </td>
-            </tr>
+            </tr>}
           </tbody>
         </table>
 

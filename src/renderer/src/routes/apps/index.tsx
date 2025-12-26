@@ -39,9 +39,30 @@ function RouteComponent() {
       }
     }
 
+  const handleTrackingToggle = async (app: App) => {
+    const updatedApp = { ...app, tracking_enabled: !app.tracking_enabled }
+    const result = await appService.updateApp(updatedApp)
+    if (result) {
+      await fetchApps()
+    }
+  }
+
   const handleAppEdit = (app: App) => {
     setIsEditing(true)
     setEditingApp(app)
+  }
+
+  const handleAppCreate = () => {
+    const newApp: App = {
+      id: -1, // Temporary ID for new app
+      user_id: user.id,
+      name: '',
+      process_name: '',
+      added_on: new Date(),
+      tracking_enabled: true,
+    }
+    setIsEditing(true)
+    setEditingApp(newApp)
   }
 
   const handleEditCancel = () => {
@@ -53,7 +74,7 @@ function RouteComponent() {
     if (!editingApp) return
     
     // Update app in backend
-    const updated = await appService.updateApp(updatedApp)
+    const updated = updatedApp.id === -1 ? await appService.createApp(updatedApp) : await appService.updateApp(updatedApp)
     if (!updated) {
       console.error('Failed to update app')
       return
@@ -75,13 +96,15 @@ function RouteComponent() {
           <div className='flex justify-between my-2'>
             <div className="font-medium text-2xl mb-4">Installed Applications</div>
             <div>
-              <Btn text="Add App" onClick={() => {}} />
+              <Btn text="Add App" onClick={handleAppCreate} />
             </div>
           </div>
           <AppTable 
             apps={apps} 
-            handleAppEdit={handleAppEdit}/
-          >
+            handleAppEdit={handleAppEdit}
+            handleTrackingToggle={handleTrackingToggle} 
+          />
+
         </div>
       </div>
 

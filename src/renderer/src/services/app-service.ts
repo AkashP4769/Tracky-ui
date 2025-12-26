@@ -20,6 +20,12 @@ class AppService extends BackendService {
         return response.data;
     }
 
+    async createApp(app: App) {
+        // Placeholder for creating app logic
+        const response = await axios.post<App>(`${this.backendUrl}/apps/`, app);
+        return response.data;
+    }
+
 }
 
 export default AppService

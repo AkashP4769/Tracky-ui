@@ -9,10 +9,11 @@ import { Edit } from 'lucide-react'
 interface AppsTableProps {
   apps: App[]
   handleAppEdit: (app: App) => void
+  handleTrackingToggle?: (app: App) => void
 }
 
 
-export default function AppsTable({ apps, handleAppEdit }: AppsTableProps) {
+export default function AppsTable({ apps, handleAppEdit, handleTrackingToggle }: AppsTableProps) {
   return (
     <div className="w-full overflow-hidden rounded-xl border border-neutral-600">
       <table className="w-full border-collapse">
@@ -72,7 +73,8 @@ export default function AppsTable({ apps, handleAppEdit }: AppsTableProps) {
 
               {/* Tracking Enabled */}
               <td className="px-4 py-2 text-center">
-                <span
+                <button
+                  onClick={(e) => {e.stopPropagation(); handleTrackingToggle && handleTrackingToggle(app);}}
                   className={`inline-flex items-center rounded-lg px-5 py-2 text-xs font-medium
                     ${
                       app.tracking_enabled
@@ -81,7 +83,7 @@ export default function AppsTable({ apps, handleAppEdit }: AppsTableProps) {
                     }`}
                 >
                   {app.tracking_enabled ? 'Enabled' : 'Disabled'}
-                </span>
+                </button>
               </td>
 
               {/* <td className="px-4 py-2 text-center">
