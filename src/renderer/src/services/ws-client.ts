@@ -1,13 +1,18 @@
 type MessageHandler = (payload: any) => void
 
 export class MessageClient {
-  private socket: WebSocket
+  private socket: WebSocket | null = null
+  private connected = false
+
   private handlers = new Map<string, MessageHandler[]>()
   private pendingTopics = new Set<string>()
 
-  constructor() {
+  connect() {
+    if (this.connected) return
+    
     const url = import.meta.env.VITE_WS_URL || 'ws://localhost:45623'
     this.socket = new WebSocket(url)
+    this.connected = true
 
     this.socket.onopen = () => {
       console.log('WS connected')
@@ -32,6 +37,7 @@ export class MessageClient {
     }
   }
 
+
   subscribe(topic: string, callback: MessageHandler) {
     this.handlers.set(topic, [
       ...(this.handlers.get(topic) || []),
@@ -55,8 +61,8 @@ export class MessageClient {
     )
   }
 
-  publish(topic: string, payload: any) {
-    if (this.socket.readyState !== WebSocket.OPEN) return
+  publish(topic: string, payload: any): boolean {
+    if (this.socket.readyState !== WebSocket.OPEN) return false
 
     this.socket.send(
       JSON.stringify({
@@ -65,6 +71,8 @@ export class MessageClient {
         payload,
       })
     )
+
+    return true
   }
 
   close() {

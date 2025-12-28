@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import type { App } from '@renderer/models/app'
 import { useActiveUserStore } from '@renderer/stores/user'
+import { useAppsStore } from '@renderer/stores/apps'
 
 import AppTable from '@renderer/components/myui/apps/app-table'
 import AppEditor from '@renderer/components/myui/apps/app-editor'
@@ -19,31 +20,30 @@ export const Route = createFileRoute('/apps/')({
 
 
 function RouteComponent() {
-  const user = useActiveUserStore((s) => s)
+  const user = useActiveUserStore((s) => s.user)
+
+  const apps = useAppsStore((s) => s.apps)
+  const setApps = useAppsStore((s) => s.setApps)
+
   const appService = new AppService()
 
-  const [apps, setApps] = useState<App[]>([])
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const [editingApp, setEditingApp] = useState<App | null>(null)
-
-  useEffect(() => {
-    fetchApps()
-  }, [])
-
-  const fetchApps = async () => {
-      try {
-        const fetchedApps = await appService.fetchApps(user.id) 
-        setApps(fetchedApps)
-      } catch (error) {
-        console.error('Error fetching apps:', error)
-      }
-    }
 
   const handleTrackingToggle = async (app: App) => {
     const updatedApp = { ...app, tracking_enabled: !app.tracking_enabled }
     const result = await appService.updateApp(updatedApp)
-    if (result) {
-      await fetchApps()
+    if (!result) {
+      // fetch manually
+      const appslist = await appService.fetchApps(user.id)
+      const apps: {[key: string]: App} = {}
+
+      appslist.forEach((app) => {
+        apps[app.process_name] = app
+      })
+
+      setApps(apps)
+      return
     }
   }
 
@@ -80,7 +80,6 @@ function RouteComponent() {
       return
     }
 
-    await fetchApps()
     setIsEditing(false)
     setEditingApp(null)
   }

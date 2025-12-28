@@ -7,7 +7,7 @@ import { Edit } from 'lucide-react'
 // }
 
 interface AppsTableProps {
-  apps: App[]
+  apps: {[key: string]: App}
   handleAppEdit: (app: App) => void
   handleTrackingToggle?: (app: App) => void
 }
@@ -29,7 +29,7 @@ export default function AppsTable({ apps, handleAppEdit, handleTrackingToggle }:
         </thead>
 
         <tbody className="bg-neutral-950 divide-y divide-neutral-600">
-          {apps.map((app) => (
+          {Object.values(apps).map((app) => (
             <tr
               key={app.id}
               className="hover:bg-neutral-900 transition-colors "

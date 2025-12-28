@@ -15,15 +15,29 @@ class AppService extends BackendService {
 
     async updateApp(app: App) {
         // Placeholder for updating app logic
+        try {
+            const response = await axios.put<App>(`${this.backendUrl}/apps/`, app);
 
-        const response = await axios.put<App>(`${this.backendUrl}/apps/`, app);
-        return response.data;
+            const published = this.wsClient.publish('update', {"action": "app_update"});
+            return published;
+        } catch (error) {
+            console.error('Error updating app:', error);
+            return false;
+        }
+
     }
 
     async createApp(app: App) {
         // Placeholder for creating app logic
-        const response = await axios.post<App>(`${this.backendUrl}/apps/`, app);
-        return response.data;
+        try {
+            const response = await axios.post<App>(`${this.backendUrl}/apps/`, app);
+
+            const published = this.wsClient.publish('update', {"action": "app_update"});
+            return published;
+        } catch (error) {
+            console.error('Error creating app:', error);
+            return false;
+        }
     }
 
 }
