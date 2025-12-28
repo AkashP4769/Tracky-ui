@@ -39,6 +39,10 @@ export class MessageClient {
 
 
   subscribe(topic: string, callback: MessageHandler) {
+    if (!this.connected || !this.socket) {
+      throw new Error('WebSocket is not connected. Call connect() first.')
+    }
+
     this.handlers.set(topic, [
       ...(this.handlers.get(topic) || []),
       callback,
@@ -53,6 +57,8 @@ export class MessageClient {
   }
 
   private sendSubscribe(topic: string) {
+    if (!this.socket) return
+
     this.socket.send(
       JSON.stringify({
         action: 'subscribe',
@@ -62,7 +68,7 @@ export class MessageClient {
   }
 
   publish(topic: string, payload: any): boolean {
-    if (this.socket.readyState !== WebSocket.OPEN) return false
+    if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return false
 
     this.socket.send(
       JSON.stringify({
@@ -76,6 +82,7 @@ export class MessageClient {
   }
 
   close() {
+    if (!this.socket) return
     this.socket.close()
   }
 }
